@@ -21,10 +21,10 @@ jobs:
           poetry-version: 1.5.1
       - name: Install dependencies
         run: poetry install
-      - name: Run test
+      - name: Publish releases
         run: |
           echo 'RELEASE_TEXT<<EOF' >> $GITHUB_ENV
-          python releases.py >> $GITHUB_ENV
+          poetry run python releases.py >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
       - name: Create release
         uses: "meeDamian/github-release@2.0"
