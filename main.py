@@ -1,9 +1,11 @@
 from utils import TranslationAnalyzer, NovelPacker, ReleaseInfo
 from pathlib import Path
 
+current_file_path = Path(__file__)
+
 
 class Archive:
-    def __init__(self, archive_path: Path = Path.cwd()):
+    def __init__(self, archive_path: Path = current_file_path.parent):
         self.archive_path = archive_path
         self.translation_analyzer = TranslationAnalyzer(archive_path)
 
