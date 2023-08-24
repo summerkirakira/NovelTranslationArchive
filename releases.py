@@ -1,7 +1,6 @@
 from main import Archive
 import sys
 import os
-from pathlib import Path
 
 if __name__ == '__main__':
     sys.stdout = open(os.devnull, 'w')
@@ -14,5 +13,3 @@ if __name__ == '__main__':
     release_text += f'## **Translated by Summerkirakira**'
     sys.stdout = sys.__stdout__
     print(release_text)
-    for file in Path(__file__).parent.glob('*'):
-        print(file.name)
