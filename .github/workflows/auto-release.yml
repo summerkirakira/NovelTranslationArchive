@@ -37,3 +37,4 @@ jobs:
           name: "小说发布"
           body: ${{ env.RELEASE_TEXT }}
           files: Output/
+          gzip: folders
