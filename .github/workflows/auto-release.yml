@@ -31,7 +31,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           allow_override: true
-          tag: "${{ github.ref }}"
+          tag: "$(git rev-parse --short HEAD)"
           name: "小说发布"
           body: ${{ env.RELEASE_TEXT }}
           files: Output/
