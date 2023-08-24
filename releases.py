@@ -16,5 +16,5 @@ if __name__ == '__main__':
     current_path = Path.cwd()
     release_path = current_path / 'releases'
     for file in release_path.glob('*.epub'):
-        file.rename(release_path / file.name.replace(' ', ''))
+        file.rename(release_path / "test1.epub")
     print(release_text)
