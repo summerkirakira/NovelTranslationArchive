@@ -23,6 +23,7 @@ jobs:
         run: poetry install
       - name: Publish releases
         run: |
+          poetry run python main.py
           echo 'RELEASE_TEXT<<EOF' >> $GITHUB_ENV
           poetry run python releases.py >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
