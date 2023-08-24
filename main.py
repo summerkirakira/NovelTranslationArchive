@@ -1,4 +1,4 @@
-from utils import TranslationAnalyzer, NovelPacker
+from utils import TranslationAnalyzer, NovelPacker, ReleaseInfo
 from pathlib import Path
 
 
@@ -7,9 +7,8 @@ class Archive:
         self.archive_path = archive_path
         self.translation_analyzer = TranslationAnalyzer(archive_path)
 
-    def validate(self) -> 'Archive':
-        self.translation_analyzer.validate_chapters()
-        return self
+    def validate(self) -> ReleaseInfo:
+        return self.translation_analyzer.validate_chapters()
 
     def release(self, release_original: bool = False):
         if release_original:
@@ -20,4 +19,6 @@ class Archive:
 
 
 if __name__ == '__main__':
-    Archive().validate().release(release_original=True)
+    archive = Archive()
+    archive.validate()
+    archive.release(release_original=True)

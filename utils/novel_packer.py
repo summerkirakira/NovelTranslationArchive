@@ -7,6 +7,8 @@ class NovelPacker:
         self.converter = Markdowns2EpubConverter()
         self.novel_path = novel_path
         self.output_path = output_path
+        if not self.output_path.exists():
+            self.output_path.mkdir(parents=True, exist_ok=True)
 
     def pack(self):
         for subdirectory in self.novel_path.glob('*'):

@@ -1,4 +1,4 @@
-from .converter_models import BookMeta, ChapterMeta, Chapter, Paragraph
+from .converter_models import BookMeta, ChapterMeta, Chapter, Paragraph, ReleaseInfo
 from .converter import BasicChapterConverter
 from .execeptions import UserCancelledException
 from pathlib import Path
@@ -72,8 +72,11 @@ class TranslationAnalyzer:
             chapter_path.write_text(self.chapter2md(chapter), encoding='utf-8')
             print(f'已创建{chapter_path}')
 
-    def _validate_chapters(self):
+    def _validate_chapters(self) -> ReleaseInfo:
+        release_info = ReleaseInfo()
         for novel in self.books:
+            total_chapter_num = 0
+            translated_chapter_num = 0
             original_novel_root_path = Path(novel.path)
             translated_novel_root_path = self.translated_novel_path / novel.chinese_title
             if not translated_novel_root_path.exists():
@@ -94,10 +97,14 @@ class TranslationAnalyzer:
             translated_chapter_metas: list[ChapterMeta] = []
             for original_chapters in original_novel_root_path.glob('*.md'):
                 if original_chapters.is_file():
+                    total_chapter_num += 1
                     original_chapter_metas.append(self.converter.convert_from_path(original_chapters)[1])
             for translated_chapters in translated_novel_root_path.glob('*.md'):
                 if translated_chapters.is_file():
-                    translated_chapter_metas.append(self.converter.convert_from_path(translated_chapters)[1])
+                    chapter_meta = self.converter.convert_from_path(translated_chapters)[1]
+                    if chapter_meta.status == 'translated':
+                        translated_chapter_num += 1
+                    translated_chapter_metas.append(chapter_meta)
             chapter_matched_list: list[ChapterMeta] = []
             for original_chapter_meta in original_chapter_metas:
                 for translated_chapter_meta in translated_chapter_metas:
@@ -116,14 +123,21 @@ class TranslationAnalyzer:
                 if input(error_message) != 'y':
                     raise UserCancelledException
                 self.generate_empty_translated_chapters(translated_novel_root_path, chapter_not_matched_list)
+            release_info.novels.append(ReleaseInfo.Novel(
+                title=novel.title,
+                chinese_title=novel.chinese_title,
+                total_chapter=total_chapter_num,
+                translated_chapter=translated_chapter_num,
+            ))
             print(f'{novel.chinese_title}章节校验完毕')
+        return release_info
 
-    def validate_chapters(self):
+    def validate_chapters(self) -> ReleaseInfo:
         try:
-            self._validate_chapters()
+            print('书籍校验完毕')
+            return self._validate_chapters()
         except UserCancelledException:
             print('用户取消操作')
-            return
-        print('书籍校验完毕')
+            return ReleaseInfo()
 
 

@@ -1,0 +1,37 @@
+name: auto-release
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+on: [push, pull_request]
+
+jobs:
+  release:
+    name: 发布Epub
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+          architecture: 'x64'
+      - uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: 1.1.15
+      - name: Install dependencies
+        run: poetry install
+      - name: Run test
+        run: |
+          echo 'RELEASE_TEXT<<EOF' >> $GITHUB_ENV
+          python releases.py >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+      - name: Create release
+        uses: "meeDamian/github-release@2.0"
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          allow_override: true
+          tag: "${{ github.ref }}"
+          name: "小说发布"
+          body: ${{ env.RELEASE_TEXT }}
+          files: Output/

@@ -69,3 +69,13 @@ class Chapter(BaseModel):
     metadata: ChapterMeta = ChapterMeta()
     paragraphs: list[Paragraph] = []
 
+
+class ReleaseInfo(BaseModel):
+    class Novel(BaseModel):
+        title: str
+        chinese_title: str
+        total_chapter: int
+        translated_chapter: int
+
+    novels: list[Novel] = []
+
