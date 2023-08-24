@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "noveltranslationarchive"
+version = "0.1.0"
+description = ""
+authors = ["Summerkirakira <summerkirakira@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+markdown2 = "^2.4.10"
+pydantic = "^2.2.1"
+ebooklib = "^0.18"
+requests = "^2.31.0"
+bs4 = "^0.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
