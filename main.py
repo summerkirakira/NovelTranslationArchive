@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 class Archive:
-    def __init__(self, archive_path: Path = Path('.')):
+    def __init__(self, archive_path: Path = Path.cwd()):
         self.archive_path = archive_path
         self.translation_analyzer = TranslationAnalyzer(archive_path)
 
