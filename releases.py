@@ -1,7 +1,7 @@
 from main import Archive
 import sys
 import os
-from pathlib import Path
+
 
 if __name__ == '__main__':
     sys.stdout = open(os.devnull, 'w')
@@ -13,8 +13,4 @@ if __name__ == '__main__':
         release_text += f'{index + 1}. {novel.chinese_title}({novel.title}) 翻译进度{novel.translated_chapter}/{novel.total_chapter}\n\n'
     release_text += f'### **Translated by Summerkirakira**'
     sys.stdout = sys.__stdout__
-    current_path = Path.cwd()
-    release_path = current_path / 'releases'
-    for file in release_path.glob('*.epub'):
-        file.rename(release_path / "中文测试.epub")
     print(release_text)
