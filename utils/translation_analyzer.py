@@ -124,6 +124,6 @@ class TranslationAnalyzer:
         except UserCancelledException:
             print('用户取消操作')
             return
-        print('章节校验完毕')
+        print('书籍校验完毕')
 
 

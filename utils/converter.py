@@ -216,6 +216,8 @@ class Markdowns2EpubConverter(EPUBConverter):
                     chapter_meta.chapter_name = f"第{self.total_chapter_count}章 {chapter_path.stem}"
                 else:
                     chapter_meta.chapter_name = chapter_path.stem
+            if chapter_meta.status == "translating":
+                chapter_meta.chapter_name = f"[翻译中]{chapter_meta.chapter_name}"
             if chapter_meta.chapter_order is None:
                 chapter_meta.chapter_order = self.total_chapter_count
             if chapter_meta.section_order is None:
