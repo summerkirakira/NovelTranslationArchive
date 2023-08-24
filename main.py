@@ -14,9 +14,9 @@ class Archive:
 
     def release(self, release_original: bool = False):
         if release_original:
-            novel_packer = NovelPacker(self.archive_path / 'Original Novels', self.archive_path / 'release')
+            novel_packer = NovelPacker(self.archive_path / 'Original Novels', self.archive_path / 'releases')
             novel_packer.pack()
-        novel_packer = NovelPacker(self.archive_path / 'Translated Novels', self.archive_path / 'release')
+        novel_packer = NovelPacker(self.archive_path / 'Translated Novels', self.archive_path / 'releases')
         novel_packer.pack()
 
 

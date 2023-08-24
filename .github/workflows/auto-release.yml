@@ -29,11 +29,10 @@ jobs:
           TAG_NAME="auto-$(date +'%Y%m%d%H%M%S')"
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
       - name: Create release
-        uses: "meeDamian/github-release@2.0"
+        uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          allow_override: true
           tag: ${{ env.TAG_NAME }}
           name: "小说发布"
           body: ${{ env.RELEASE_TEXT }}
-          files: release/
+          artifacts: releases/*.epub
