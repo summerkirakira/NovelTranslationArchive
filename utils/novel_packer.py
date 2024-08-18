@@ -25,3 +25,4 @@ class NovelPacker:
                 else:
                     print(f"在{subdirectory.name}中找不到book_meta.json，跳过...")
             print(f"书籍：{subdirectory.name}生成epub完成...")
+            self.converter = Markdowns2EpubConverter()
