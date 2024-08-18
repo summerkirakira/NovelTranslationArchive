@@ -5,6 +5,7 @@ chapter_order: 18
 chapter_name: Order：１８
 show_chapter_order: True
 meta: None
+status: translated
 ---
 
 # Order：１８

@@ -5,6 +5,7 @@ chapter_order: 8
 chapter_name: Order：８
 show_chapter_order: True
 meta: None
+status: translated
 ---
 
 # Order：８

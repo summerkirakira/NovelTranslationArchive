@@ -5,6 +5,7 @@ chapter_order: 5
 chapter_name: Order：５
 show_chapter_order: True
 meta: None
+status: translated
 ---
 
 # Order：５
