@@ -166,3 +166,8 @@ test/
 **/*.epub
 output/
 config/
+
+test.py
+test.txt
+translated.md
+test.md

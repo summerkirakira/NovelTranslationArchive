@@ -12,6 +12,11 @@ pydantic = "^2.2.1"
 ebooklib = "^0.18"
 requests = "^2.31.0"
 bs4 = "^0.0.1"
+beautifulsoup4 = "^4.12.3"
+python-dotenv = "^1.0.1"
+httpx = "^0.27.0"
+anthropic = "^0.34.1"
+universe-ai = "^0.1.0"
 
 
 [build-system]

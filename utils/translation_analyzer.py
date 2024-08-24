@@ -4,6 +4,8 @@ from .execeptions import UserCancelledException
 from pathlib import Path
 from typing import Optional
 import json
+from utils.translate import translate_md
+import asyncio
 
 
 class TranslationAnalyzer:
@@ -17,6 +19,7 @@ class TranslationAnalyzer:
             self.translated_novel_path.mkdir()
         self.books: list[BookMeta] = self._validate_novels()
         self.converter = BasicChapterConverter()
+        self.chapter2path = {}
 
     @classmethod
     def paragraph2md(cls, paragraph: Paragraph) -> str:
@@ -68,9 +71,32 @@ class TranslationAnalyzer:
             chapter = Chapter(metadata=chapter_meta)
             chapter.metadata.status = 'translating'
             chapter.paragraphs.append(Paragraph(type=Paragraph.ParagraphType.Title, content=chapter_meta.chapter_name))
-            chapter.paragraphs.append(Paragraph(type=Paragraph.ParagraphType.Text, content='待翻译...'))
+
+            chapter.paragraphs.append(Paragraph(type=Paragraph.ParagraphType.Text, content='待翻译'))
             chapter_path.write_text(self.chapter2md(chapter), encoding='utf-8')
             print(f'已创建{chapter_path}')
+
+    def generate_auto_translated_chapters(self, path: Path, chapter_metas: list[ChapterMeta]):
+        for chapter_meta in chapter_metas:
+            try:
+                chapter_prefix = str(chapter_meta.chapter_order).zfill(2)
+                chapter_path = path / f'{chapter_prefix}-{chapter_meta.chapter_name}.md'
+                if chapter_path.exists():
+                    print(f'{chapter_path}已存在，跳过...')
+                    continue
+                original_chapter_path = self.chapter2path[chapter_meta.chapter_order]
+                chapter = Chapter(metadata=chapter_meta)
+                chapter.metadata.status = 'translated'
+
+                loop = asyncio.get_event_loop()
+                text = loop.run_until_complete(translate_md(original_chapter_path, Path('data') / path.name))
+
+                chapter.paragraphs.append(Paragraph(type=Paragraph.ParagraphType.Title, content=chapter_meta.chapter_name))
+                chapter.paragraphs.append(Paragraph(type=Paragraph.ParagraphType.Text, content=text))
+                chapter_path.write_text(self.chapter2md(chapter), encoding='utf-8')
+                print(f'已创建{chapter_path}')
+            except Exception as e:
+                print(f'自动翻译{chapter_meta.chapter_name}失败, {e}')
 
     def _validate_chapters(self) -> ReleaseInfo:
         release_info = ReleaseInfo()
@@ -98,7 +124,10 @@ class TranslationAnalyzer:
             for original_chapters in original_novel_root_path.glob('*.md'):
                 if original_chapters.is_file():
                     total_chapter_num += 1
-                    original_chapter_metas.append(self.converter.convert_from_path(original_chapters)[1])
+                    chapter_info = self.converter.convert_from_path(original_chapters)[1]
+                    self.chapter2path[chapter_info.chapter_order] = original_chapters
+                    original_chapter_metas.append(chapter_info)
+
             for translated_chapters in translated_novel_root_path.glob('*.md'):
                 if translated_chapters.is_file():
                     chapter_meta = self.converter.convert_from_path(translated_chapters)[1]
@@ -122,7 +151,10 @@ class TranslationAnalyzer:
                 error_message += '是否自动补全空章节？(y/n):'
                 if input(error_message) != 'y':
                     raise UserCancelledException
-                self.generate_empty_translated_chapters(translated_novel_root_path, chapter_not_matched_list)
+                if input('是否使用大模型自动翻译章节？(y/n):') == 'y':
+                    self.generate_auto_translated_chapters(translated_novel_root_path, chapter_not_matched_list)
+                else:
+                    self.generate_empty_translated_chapters(translated_novel_root_path, chapter_not_matched_list)
             release_info.novels.append(ReleaseInfo.Novel(
                 title=novel.title,
                 chinese_title=novel.chinese_title,
